@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemora | Jewellery Management</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <section id="auth-screen" class="auth-screen">
+    <div class="auth-intro">
+      <p class="eyebrow">GEMORA / JEWELLERY MANAGEMENT</p>
+      <h1>Manage your jewellery business with elegance.</h1>
+      <p>Track metal rates, calculate making charges and GST, and generate polished bills for every customer.</p>
+    </div>
+    <div class="auth-card">
+      <div class="brand-mark">GJ</div>
+      <div class="tabs">
+        <button class="tab active" data-view="login" type="button">Sign in</button>
+        <button class="tab" data-view="register" type="button">Create account</button>
+      </div>
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+
+      <form id="login-form" class="auth-form">
+        <h2>Welcome back</h2>
+        <label for="login-email">Email address</label>
+        <input id="login-email" name="email" type="email" autocomplete="email" required>
+        <label for="login-password">Password</label>
+        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+        <button class="primary-button" type="submit">Sign in <span>→</span></button>
+      </form>
+
+      <form id="register-form" class="auth-form hidden">
+        <h2>Create store account</h2>
+        <label for="register-name">Full name</label>
+        <input id="register-name" name="full_name" type="text" autocomplete="name" required>
+        <label for="register-email">Email address</label>
+        <input id="register-email" name="email" type="email" autocomplete="email" required>
+        <label for="register-password">Password</label>
+        <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="6" required>
+        <button class="primary-button" type="submit">Create account <span>→</span></button>
+      </form>
+    </div>
+  </section>
+
+  <section id="tracker-screen" class="tracker-screen hidden">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><span class="brand-mark">GJ</span><strong>Gemora</strong></div>
+      <nav>
+        <button class="nav-item active" data-category="overview" type="button">▦ <span>Overview</span></button>
+        <button class="nav-item" data-category="inventory" type="button">◇ <span>Inventory</span></button>
+        <button class="nav-item" data-category="rates" type="button">◆ <span>Rates</span></button>
+        <button class="nav-item" data-category="billing" type="button">◫ <span>Calculator</span></button>
+        <button class="nav-item" data-category="bills" type="button">▤ <span>Bills</span></button>
+        <button class="nav-item" data-category="payments" type="button">₹ <span>Payments</span></button>
+        <button class="nav-item" data-category="customers" type="button">◎ <span>Customers</span></button>
+        <button class="nav-item" data-category="exchange" type="button">⇄ <span>Gold exchange</span></button>
+        <button class="nav-item" data-category="purchases" type="button">＋ <span>Purchases</span></button>
+        <button class="nav-item" data-category="reports" type="button">▥ <span>Reports</span></button>
+      </nav>
+      <button id="logout-button" class="logout-button" type="button">↪ <span>Sign out</span></button>
+    </aside>
+
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">STORE OPERATIONS</p>
+          <h1 id="welcome-heading">Good morning</h1>
+        </div>
+        <div class="user-chip">
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+          <div id="avatar" class="avatar">U</div>
+          <span id="user-email"></span>
+        </div>
+      </header>
+
+      <div id="tracker-message" class="message" role="status" aria-live="polite"></div>
+
+      <section id="overview" class="dashboard-section category-panel" data-panel="overview">
+        <div class="section-heading">
+          <div><p class="eyebrow">MONTHLY PERFORMANCE</p><h2>Overview</h2></div>
+          <span class="date-label" id="month-label">TODAY</span>
+        </div>
+        <div class="stat-grid">
+          <article class="stat-card"><span class="stat-icon green">₹</span><strong id="today-sales">₹0</strong><span>Today's sales</span></article>
+          <article class="stat-card"><span class="stat-icon blue">◎</span><strong id="total-customers">0</strong><span>Total customers</span></article>
+          <article class="stat-card"><span class="stat-icon orange">◇</span><strong id="inventory-items">0</strong><span>Inventory items</span></article>
+          <article class="stat-card"><span class="stat-icon purple">◌</span><strong id="outstanding-amount">₹0</strong><span>Outstanding amount</span></article>
+          <article class="stat-card"><span class="stat-icon gold">◆</span><strong id="gold-stock">0g</strong><span>Gold stock</span></article>
+        </div>
+        <div class="dashboard-chart-grid">
+          <section class="surface chart-card"><div class="surface-heading"><h3>Sales</h3><span class="date-label">LAST 7 DAYS</span></div><div id="sales-chart" class="sales-chart"></div></section>
+          <section class="surface chart-card"><div class="surface-heading"><h3>Inventory by metal</h3><span class="date-label">AVAILABLE STOCK</span></div><div id="metal-chart" class="metal-chart"></div></section>
+        </div>
+        <section class="surface recent-transactions"><div class="surface-heading"><h3>Recent transactions</h3><button class="text-button" data-category="reports" type="button">Open reports</button></div><div id="recent-transactions-list" class="history-list"></div></section>
+      </section>
+
+      <section class="dashboard-section category-panel" data-panel="inventory">
+        <div class="section-heading">
+          <div><p class="eyebrow">STOCK CONTROL</p><h2>Inventory</h2></div>
+          <button id="new-inventory-button" class="primary-button compact-button" type="button">Add jewellery</button>
+        </div>
+        <div class="inventory-toolbar surface">
+          <input id="inventory-search" type="search" placeholder="Search SKU or product name">
+          <select id="inventory-category"><option value="">All categories</option></select>
+          <select id="inventory-metal"><option value="">All metals</option><option>Gold</option><option>Silver</option><option>Platinum</option></select>
+          <select id="inventory-purity"><option value="">All purity</option><option>24K</option><option>22K</option><option>18K</option><option>14K</option></select>
+          <select id="inventory-status"><option value="">All statuses</option><option>In Stock</option><option>Sold</option><option>Reserved</option><option>Under Repair</option></select>
+          <select id="inventory-sort"><option value="updated_at">Recently updated</option><option value="product_name">Product name</option><option value="selling_price">Selling price</option><option value="sku">SKU</option></select>
+        </div>
+        <div id="inventory-form-wrap" class="surface inventory-form-wrap hidden">
+          <div class="surface-heading"><div><p class="eyebrow">PRODUCT MASTER</p><h3 id="inventory-form-title">Add jewellery item</h3></div><button id="cancel-inventory-button" class="text-button" type="button">Cancel</button></div>
+          <form id="inventory-form" class="inventory-form">
+            <input name="id" type="hidden">
+            <label>SKU / Item ID<input name="sku" required></label>
+            <label>Product name<input name="product_name" required></label>
+            <label>Category<input name="category" placeholder="Rings, chains, bangles" required></label>
+            <label>Subcategory<input name="subcategory"></label>
+            <label>Metal type<select name="metal_type" required><option>Gold</option><option>Silver</option><option>Platinum</option></select></label>
+            <label>Purity<select name="purity" required><option>24K</option><option selected>22K</option><option>18K</option><option>14K</option><option>Other</option></select></label>
+            <label>Gross weight (g)<input name="gross_weight" type="number" min="0.001" step="0.001" required></label>
+            <label>Stone weight (g)<input name="stone_weight" type="number" min="0" step="0.001" value="0"></label>
+            <label>Net metal weight (g)<input name="net_metal_weight" type="number" min="0" step="0.001" placeholder="Auto-calculated"></label>
+            <label>Making charges<input name="making_charges" type="number" min="0" step="0.01" value="0"></label>
+            <label>Wastage %<input name="wastage_percentage" type="number" min="0" max="100" step="0.01" value="0"></label>
+            <label>Stone charges<input name="stone_charges" type="number" min="0" step="0.01" value="0"></label>
+            <label>Diamond charges<input name="diamond_charges" type="number" min="0" step="0.01" value="0"></label>
+            <label>Purchase price<input name="purchase_price" type="number" min="0" step="0.01" value="0"></label>
+            <label>Selling price<input name="selling_price" type="number" min="0" step="0.01" value="0"></label>
+            <label>Status<select name="status"><option>In Stock</option><option>Reserved</option><option>Under Repair</option><option>Sold</option></select></label>
+            <label>Hallmark / HUID<input name="hallmark_huid"></label>
+            <label>Barcode<input name="barcode"></label>
+            <label>QR code value<input name="qr_code"></label>
+            <label>Product image URL<input name="product_image" type="url"></label>
+            <label>Supplier<input name="supplier"></label>
+            <label>Karigar<input name="karigar"></label>
+            <button class="primary-button form-submit" type="submit">Save jewellery item</button>
+          </form>
+        </div>
+        <div id="inventory-message" class="message" role="status" aria-live="polite"></div>
+        <div class="surface inventory-table-wrap">
+          <div class="surface-heading"><h3>Stock items</h3><span id="inventory-count" class="date-label">0 ITEMS</span></div>
+          <div id="inventory-list" class="inventory-list"></div>
+        </div>
+        <div id="inventory-detail" class="surface inventory-detail hidden"></div>
+      </section>
+
+      <section class="dashboard-section category-panel" data-panel="rates">
+        <div class="section-heading"><div><p class="eyebrow">MARKET DATA</p><h2>Metal rates</h2></div><span class="date-label">CURRENT STORE RATES</span></div>
+        <div class="content-grid">
+          <section class="surface">
+            <div class="surface-heading"><h3>Live metal rates</h3></div>
+            <div id="rates-list" class="rates-list"></div>
+          </section>
+          <form id="rate-form" class="surface form-card">
+            <h3>Update rate</h3>
+            <p class="form-note">Rates are used automatically by the calculator.</p>
+            <label>Metal<input name="metal_name" type="text" placeholder="Gold / Silver / Platinum" required></label>
+            <label>Rate per gram<input name="rate_per_gram" type="number" min="0" step="0.01" required></label>
+            <label>Purity %<input name="purity_percentage" type="number" min="0" max="100" step="0.01" value="100" required></label>
+            <button class="primary-button" type="submit">Save rate</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="dashboard-section category-panel" data-panel="bills">
+        <div class="section-heading"><div><p class="eyebrow">SALES RECORDS</p><h2>Customer bills</h2></div><span class="date-label">DOWNLOADABLE INVOICES</span></div>
+        <section class="surface">
+          <div class="surface-heading"><h3>Recent bills</h3><button class="text-button" data-category="billing" type="button">Create bill →</button></div>
+          <div id="bill-list" class="bill-list"></div>
+        </section>
+      </section>
+
+      <section class="dashboard-section category-panel" data-panel="payments">
+        <div class="section-heading"><div><p class="eyebrow">CASHFLOW</p><h2>Payments</h2></div><span class="date-label">CUSTOMER RECEIPTS</span></div>
+        <div id="payments-message" class="message" role="status" aria-live="polite"></div>
+        <section class="surface report-card payment-table"><div class="surface-heading"><h3>Payment history</h3><span id="payment-count" class="date-label">0 RECORDS</span></div><div id="payment-list" class="report-list"></div></section>
+      </section>
+
+      <section class="dashboard-section category-panel" data-panel="customers">
+        <div class="section-heading"><div><p class="eyebrow">CUSTOMER RELATIONSHIPS</p><h2>Customers</h2></div><button id="new-customer-button" class="primary-button compact-button" type="button">Add customer</button></div>
+        <div class="inventory-toolbar surface customer-toolbar"><input id="customer-search" type="search" placeholder="Search name, mobile, ID or email"></div>
+        <div id="customer-form-wrap" class="surface inventory-form-wrap hidden">
+          <div class="surface-heading"><div><p class="eyebrow">CUSTOMER MASTER</p><h3 id="customer-form-title">Add customer</h3></div><button id="cancel-customer-button" class="text-button" type="button">Cancel</button></div>
+          <form id="customer-form" class="inventory-form customer-form">
+            <input name="id" type="hidden">
+            <label>Name<input name="name" required></label>
+            <label>Mobile number<input name="mobile_number" type="tel" required></label>
+            <label>Email<input name="email" type="email"></label>
+            <label>City<input name="city"></label>
+            <label>Address<input name="address"></label>
+            <label>GSTIN<input name="gstin"></label>
+            <label class="wide-field">Notes<textarea name="notes" rows="2"></textarea></label>
+            <button class="primary-button form-submit" type="submit">Save customer</button>
+          </form>
+        </div>
+        <div id="customer-message" class="message" role="status" aria-live="polite"></div>
+        <div class="surface inventory-table-wrap"><div class="surface-heading"><h3>Customer directory</h3><span id="customer-count" class="date-label">0 CUSTOMERS</span></div><div id="customer-list" class="inventory-list"></div></div>
+        <div id="customer-detail" class="surface inventory-detail hidden"></div>
+      </section>
+
+      <section class="dashboard-section category-panel" data-panel="exchange">
+        <div class="section-heading"><div><p class="eyebrow">CUSTOMER TRADE-IN</p><h2>Gold exchange</h2></div><span class="date-label">EXCHANGE HISTORY</span></div>
+        <div class="content-grid">
+          <form id="exchange-form" class="surface form-card">
+            <h3>Record gold exchange</h3>
+            <p class="form-note">Exchange value is calculated from the current rate, old jewellery weight, and purity.</p>
+            <label>Customer<select name="customer_id" id="exchange-customer" required><option value="">Select customer</option></select></label>
+            <label>Old jewellery weight (g)<input name="old_jewellery_weight" type="number" min="0.001" step="0.001" required></label>
+            <label>Old jewellery purity<input name="old_purity" placeholder="22K or 916" required></label>
+            <label>Current metal rate<input name="current_metal_rate" type="number" min="0" step="0.01" required></label>
+            <label>New jewellery<select name="new_inventory_item_id" id="exchange-new-item"><option value="">Enter new jewellery amount</option></select></label>
+            <label>New jewellery name<input name="new_jewellery" placeholder="New ring / chain" required></label>
+            <label>New jewellery amount<input name="new_jewellery_amount" type="number" min="0" step="0.01" value="0"></label>
+            <label>Exchange date<input name="exchange_date" type="date" required></label>
+            <button class="primary-button" type="submit">Save exchange</button>
+          </form>
+          <section class="surface">
+            <div class="surface-heading"><h3>Exchange value</h3><span class="date-label">CALCULATED ON SAVE</span></div>
+            <div id="exchange-preview" class="trade-preview"><p class="empty-state">Enter old jewellery details to record an exchange.</p></div>
+          </section>
+        </div>
+        <div id="exchange-message" class="message" role="status" aria-live="polite"></div>
+        <div class="surface trade-table"><div class="surface-heading"><h3>Recent exchanges</h3></div><div id="exchange-list" class="history-list"></div></div>
+      </section>
+
+      <section class="dashboard-section category-panel" data-panel="purchases">
+        <div class="section-heading"><div><p class="eyebrow">STOCK ACQUISITION</p><h2>Purchases</h2></div><span class="date-label">INVENTORY RECEIPTS</span></div>
+        <div id="purchase-message" class="message" role="status" aria-live="polite"></div>
+        <form id="purchase-form" class="surface inventory-form purchase-form">
+          <label>Supplier<input name="supplier" required></label>
+          <label>Product<input name="product" placeholder="Gold chain" required></label>
+          <label>Metal<select name="metal"><option>Gold</option><option>Silver</option><option>Platinum</option></select></label>
+          <label>Purity<input name="purity" placeholder="22K" required></label>
+          <label>Weight (g)<input name="weight" type="number" min="0.001" step="0.001" required></label>
+          <label>Rate / gram<input name="rate" type="number" min="0" step="0.01" required></label>
+          <label>Total amount<input name="total_amount" type="number" min="0" step="0.01" required></label>
+          <label>Date<input name="purchase_date" type="date" required></label>
+          <label>SKU (optional)<input name="sku" placeholder="Auto-generated if blank"></label>
+          <button class="primary-button form-submit" type="submit">Save purchase and add stock</button>
+        </form>
+        <div class="surface trade-table"><div class="surface-heading"><h3>Purchase history</h3></div><div id="purchase-list" class="history-list"></div></div>
+      </section>
+
+      <section class="dashboard-section category-panel" data-panel="reports">
+        <div class="section-heading"><div><p class="eyebrow">BUSINESS REPORTING</p><h2>Reports</h2></div><span class="date-label">LIVE DATABASE RECORDS</span></div>
+        <div id="reports-message" class="message" role="status" aria-live="polite"></div>
+        <div class="reports-grid">
+          <section class="surface report-card"><div class="surface-heading"><h3>Sales report</h3><span id="sales-report-count" class="date-label">0 RECORDS</span></div><div id="sales-report" class="report-list"></div></section>
+          <section class="surface report-card"><div class="surface-heading"><h3>Inventory report</h3><span id="inventory-report-count" class="date-label">0 ITEMS</span></div><div id="inventory-report" class="report-list"></div></section>
+          <section class="surface report-card"><div class="surface-heading"><h3>Customer outstanding</h3><span id="outstanding-report-count" class="date-label">0 CUSTOMERS</span></div><div id="outstanding-report" class="report-list"></div></section>
+        </div>
+      </section>
+
+      <section id="billing" class="dashboard-section lower-section category-panel" data-panel="billing">
+        <div class="section-heading"><div><p class="eyebrow">AUTOMATIC PRICING</p><h2>Price calculator</h2></div></div>
+        <div class="manager-grid">
+          <form id="bill-form" class="surface form-card">
+            <h3>Jewellery price builder</h3>
+            <p class="form-note">Live store rates are used automatically. All financial totals are calculated by the server.</p>
+            <label>Item name<input name="item_name" type="text" placeholder="22K gold ring" required></label>
+            <label>Metal<select name="metal_name"><option>Gold</option><option>Silver</option><option>Platinum</option></select></label>
+            <label>Purity<select id="calculator-purity" name="purity"><option>24K</option><option selected>22K</option><option>18K</option><option>14K</option><option>Custom</option></select></label>
+            <label id="custom-purity-field" class="hidden">Custom purity %<input name="custom_purity_percentage" type="number" min="0.01" max="100" step="0.01"></label>
+            <label>Gross weight (g)<input name="gross_weight" type="number" min="0.001" step="0.001" required></label>
+            <label>Stone weight (g)<input name="stone_weight" type="number" min="0" step="0.001" value="0"></label>
+            <label>Net weight (g)<input name="net_weight" type="number" min="0" step="0.001" placeholder="Auto-calculated"></label>
+            <label>Making / gram<input name="making_charge_per_gram" type="number" min="0" step="0.01" value="0"></label>
+            <label>Making %<input name="making_charge_percentage" type="number" min="0" step="0.01" value="0"></label>
+            <label>Wastage %<input name="wastage_percentage" type="number" min="0" step="0.01" value="0"></label>
+            <label>Stone charges<input name="stone_charges" type="number" min="0" step="0.01" value="0"></label>
+            <label>Diamond charges<input name="diamond_charges" type="number" min="0" step="0.01" value="0"></label>
+            <label>Discount<input name="discount_amount" type="number" min="0" step="0.01" value="0"></label>
+            <label>GST %<input name="gst_percent" type="number" min="0" step="0.01" value="3"></label>
+            <button class="primary-button" type="submit">Calculate payable amount</button>
+          </form>
+        </div>
+
+        <div id="bill-preview" class="surface preview-box hidden"></div>
+        <section id="sale-details" class="surface sale-details hidden">
+          <div class="surface-heading"><div><p class="eyebrow">SAVE CALCULATION</p><h3>Save as estimate or bill</h3></div></div>
+          <form id="sale-form" class="sale-form">
+            <label>Customer<select id="sale-customer" name="customer_id"><option value="">Walk-in customer</option></select></label>
+            <label>Record type<select name="record_type"><option value="estimate">Estimate</option><option value="bill">Bill</option></select></label>
+            <button class="primary-button" type="submit">Save calculation</button>
+          </form>
+        </section>
+      </section>
+    </main>
+  </section>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
