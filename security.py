@@ -58,7 +58,7 @@ def get_current_user(token:str= Depends(oauth2_scehme),db:session=Depends(get_db
             )
 
         #user finding from db
-        user = db.execute(select(User).where(func.lower(User.email) == email)).scalar().first()
+        user = db.execute(select(User).where(func.lower(User.email) == email)).scalars().first()
 
         if not user:
             raise HTTPException(
