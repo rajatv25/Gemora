@@ -9,6 +9,7 @@ from model import User
 from database import get_db
 from datetime import datetime, timedelta, timezone
 from jose import jwt,JWTError
+from password_policy import validate_password_length
 
 secret_key = os.getenv("SECRET_KEY", "dev-only-change-me")
 ALGORITHM="HS256"
@@ -17,9 +18,11 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scehme=OAuth2PasswordBearer(tokenUrl="/login")
 
 def hash_password(plain_password):
+    validate_password_length(plain_password)
     return pwd_context.hash(plain_password)
 
 def verify_password(plain_password, hashed_password):
+    validate_password_length(plain_password)
     return pwd_context.verify(plain_password, hashed_password)
 
 def create_acces_token(data: dict):

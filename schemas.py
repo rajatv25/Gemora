@@ -1,10 +1,13 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, field_validator
+from password_policy import validate_password_length
 
 
 class UserCreate(BaseModel):
     full_name: str
     email: EmailStr
     password: str
+
+    _validate_password_length = field_validator("password")(validate_password_length)
 
 
 class UserResponse(BaseModel):
@@ -17,6 +20,8 @@ class UserResponse(BaseModel):
 class UserLogin(BaseModel):
     email: str
     password: str
+
+    _validate_password_length = field_validator("password")(validate_password_length)
 
 
 class ExpenseCreate(BaseModel):
