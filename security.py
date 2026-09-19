@@ -19,10 +19,13 @@ oauth2_scehme=OAuth2PasswordBearer(tokenUrl="/login")
 
 def hash_password(plain_password):
     validate_password_length(plain_password)
-    return pwd_context.hash(plain_password[:72])
+    # Convert string to utf-8 bytes and slice the first 72 bytes explicitly
+    truncated_password = plain_password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
+    return pwd_context.hash(truncated_password)
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password[:72], hashed_password)
+    truncated_password = plain_password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
+    return pwd_context.verify(truncated_password, hashed_password)
 
 def create_acces_token(data: dict):
     # Logic to create access token
