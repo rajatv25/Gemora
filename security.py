@@ -3,7 +3,7 @@ import os
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy import select 
+from sqlalchemy import func, select 
 from sqlalchemy.orm import session
 from model import User
 from database import get_db
@@ -19,11 +19,10 @@ oauth2_scehme=OAuth2PasswordBearer(tokenUrl="/login")
 
 def hash_password(plain_password):
     validate_password_length(plain_password)
-    return pwd_context.hash(plain_password)
+    return pwd_context.hash(plain_password[:72])
 
 def verify_password(plain_password, hashed_password):
-    validate_password_length(plain_password)
-    return pwd_context.verify(plain_password, hashed_password)
+    return pwd_context.verify(plain_password[:72], hashed_password)
 
 def create_acces_token(data: dict):
     # Logic to create access token
@@ -47,7 +46,7 @@ def get_current_user(token:str= Depends(oauth2_scehme),db:session=Depends(get_db
             algorithms=[ALGORITHM]
         )
 
-        email = payload.get("sub")
+        email = (payload.get("sub") or "").strip().lower()
 
         if not email:
             raise HTTPException(
@@ -56,7 +55,7 @@ def get_current_user(token:str= Depends(oauth2_scehme),db:session=Depends(get_db
             )
 
         #user finding from db
-        user = db.execute(select(User).where(User.email == email)).scalar_one_or_none()
+        user = db.execute(select(User).where(func.lower(User.email) == email)).scalar_one_or_none()
 
         if not user:
             raise HTTPException(
